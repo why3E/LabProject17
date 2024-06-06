@@ -360,6 +360,7 @@ void CGameFramework::ProcessInput()
 
 void CGameFramework::AnimateObjects()
 {
+	if (m_pPlayer) m_pPlayer->Animate(m_GameTimer.GetTimeElapsed());
 	if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
 }
 
@@ -495,6 +496,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_F9:
 			ChangeSwapChainState();
+			break;
+		case VK_CONTROL:
+			((CAirplanePlayer*)m_pPlayer)->FireBullet(m_pSelectedObject);
+			m_pSelectedObject = NULL;
 			break;
 		deafult:
 			break;

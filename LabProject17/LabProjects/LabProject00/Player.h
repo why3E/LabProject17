@@ -9,8 +9,12 @@
 #define DIR_RIGHT 0x08
 #define DIR_UP 0x10
 #define DIR_DOWN 0x20
+#define BULLETS					10
 
 class CPlayer : public CGameObject {
+public:
+	virtual void Animate(float fElapsedTime);
+	virtual void OnUpdateTransform();
 protected:
 	XMFLOAT3 m_xmf3Position;
 	XMFLOAT3 m_xmf3Right;
@@ -91,4 +95,11 @@ public:
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 
 	virtual void OnPrepareRender();
+
+	float						m_fBulletEffectiveRange = 150.0f;
+	CBulletObject* m_ppBullets[BULLETS];
+	void FireBullet(CGameObject* pLockedObject);
+	virtual void OnUpdateTransform();
+	virtual void Animate(float fElapsedTime);
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 };
