@@ -90,3 +90,23 @@ public:
 	virtual CGameObject* PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition, XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance);
 };
 
+
+class CstartShader : public CObjectsShader
+{
+public:
+	CstartShader();
+	virtual ~CstartShader();
+
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
+		* pd3dCommandList);
+};
+
+class CstageShader : public CObjectsShader
+{
+public:
+	CstageShader();
+	virtual ~CstageShader();
+
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
+		* pd3dCommandList);
+};

@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "Player.h"
 
 class CScene
 {
@@ -15,7 +16,7 @@ public:
 
 	void ReleaseUploadBuffers();
 
-	void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 	void ReleaseObjects();
 
 	bool ProcessInput(UCHAR* pKeysBuffer);
@@ -35,3 +36,25 @@ public:
 	CGameObject* PickObjectPointedByCursor(int xClient, int yClient, CCamera *pCamera);
 };
 
+
+
+
+class start_Scene :CScene
+{
+public:
+	start_Scene();
+	~start_Scene();
+
+
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+
+};
+
+class stage_Scene :CScene
+{
+public:
+	stage_Scene();
+	~stage_Scene();
+
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+};

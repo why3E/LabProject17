@@ -7,6 +7,8 @@
 
 class CGameFramework
 {
+public:
+	void BuildObjects_change();
 private:
 	HINSTANCE m_hInstace;
 	HWND m_hWnd;

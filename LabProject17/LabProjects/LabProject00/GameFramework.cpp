@@ -264,8 +264,9 @@ void CGameFramework::BuildObjects()
 {
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
-	m_pScene = new CScene();
-	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
+	start_Scene* check_scene = new start_Scene();
+	m_pScene = (CScene*)check_scene;
+	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
 	CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
 	m_pPlayer = pAirplanePlayer;
@@ -278,6 +279,30 @@ void CGameFramework::BuildObjects()
 	
 	WaitForGpuComplete();
 	
+	if (m_pScene) m_pScene->ReleaseUploadBuffers();
+
+	m_GameTimer.Reset();
+}
+void CGameFramework::BuildObjects_change()
+{
+	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
+	ReleaseObjects();
+
+	stage_Scene* check_scene = new stage_Scene();
+	m_pScene = (CScene*)check_scene;
+	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
+
+	CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
+	m_pPlayer = pAirplanePlayer;
+
+	m_pCamera = m_pPlayer->GetCamera();
+
+	m_pd3dCommandList->Close();
+	ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
+	m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+	WaitForGpuComplete();
+
 	if (m_pScene) m_pScene->ReleaseUploadBuffers();
 
 	m_GameTimer.Reset();
@@ -431,7 +456,13 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
-		m_pSelectedObject = m_pScene->PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam), m_pCamera);
+		//마우스 캡쳐를 하고 현재 마우스 위치를 가져온다.
+		m_pSelectedObject = m_pScene->PickObjectPointedByCursor(LOWORD(lParam),
+			HIWORD(lParam), m_pCamera);
+		if (m_pSelectedObject)
+		{
+			BuildObjects_change();
+		}
 		::SetCapture(hWnd);
 		::GetCursorPos(&m_ptOldCursorPos);
 		break;
